@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+
+<html lang="en" xmlns="http://www.w3.org/1999/xhtml">
+<head>
+    <meta charset="utf-8" />
+    <title></title>
+</head>
+<body>
+    <input type="color" value="#ff0000" />
+    <input type="color"
+           oninput="getColorElements(e)"
+           id="body"
+           name="body"
+           value="oklab(50% 0.1 0.1 / 0.5)"
+           colorspace="display-p3"
+           alpha />
+    <script>
+        function getColorElements(e) {
+            const color = e.target.value;
+            //do stuff, pass it to
+        }
+    </script>
+</body>
+</html>
