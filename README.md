@@ -4,7 +4,7 @@ A browser tool to make music using just a color picker as an instrument.
 # How this got made 
 I used the Markov Chain music generation algorithm found in this paper: [[https://musmat.org/wp-content/uploads/2019/12/06-Carvalho.pdf](https://math.uchicago.edu/~may/REU2023/REUPapers/Wokhlu.pdf)
 That paper presents a simple example of mapping the notes in Jingle Bells to a Markov transition matrix, where each (i,j) entry is the probability that note i moves to note j at the current step. 
-That paper calculates transition probabilities (the i,j entry in the transition matrix) based on that set of Jingle Bells notes. This program defines global transition probabilities for each note; 
+That paper calculates transition probabilities (the i,j entry in the transition matrix) based on that set of Jingle Bells notes. This program defines global transition probabilities for each note pair; 
 these probabilities were calculated using random samples of 24-TET music, where (i,j) = (# samples where j follows i) / (# total samples). This program's inputs aren't musical notes, but hexcodes 
 corresponding to a user's current colorpicker selection. So I needed to define a transformation function to map hexcodes to notes to feed as seed input to my chain. I solved this problem by noticing 
 that each hexcode contains 6 hex digits and each digit, 4 bits, for a total of 24 bits per code. That number, 24 bits, matches exactly the number of notes in the 24-tone equal temperament scale. So I 
