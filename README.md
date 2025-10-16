@@ -8,9 +8,9 @@ This program's inputs aren't musical notes, but hexcodes corresponding to a user
 to my chain. I solved this problem by noticing that each hexcode contains 6 hex digits and each digit, 4 bits, for a total of 24 bits per code. That number, 24 bits, matches exactly the number of notes in the 
 24-tone equal temperament scale. So I decided to use that scale instead of the standard Western chromatic one, because it produced a more natural mapping. Here's an example showing how the algorithm maps hexcodes 
 to chords: given hexcode #0x007c41, which is in binary 0000 0000 0111 1100 0100 0001, if note ni = 0, then it is excluded from the current transition matrix, and if it equals 1, then it is included. So that binary 
-would map to the chord: ... When mouse events stop triggering input updates (when the user's mouse "stays put" on the current color selection), the chain is simulated, and a stochastic composition generated. 
-When a new input update is triggered (the user drags the pointer, picking a new color), that new hexcode seeds a chain and a new simulation begins. In theory, this could go on for as long as a user wanted. 
-This is great for people who live in insane asylums or have had frontal lobotomies or work at Soulless Big Corps.  
+would map to the chord: ... Transition probabilities were calculated by random sampling of 24-TET music. When mouse events stop triggering input updates (when the user's mouse "stays put" on the current color selection), 
+the chain is simulated, and a stochastic composition generated. When a new input update is triggered (the user drags the pointer, picking a new color), that new hexcode seeds a chain and a new simulation begins. 
+In theory, this could go on for as long as a user wanted. This is great for people who live in insane asylums or have had frontal lobotomies or work at Soulless Big Corps.
 
 #TO DO 
 Add a "Hear Someone Else's Noise" feature, which randomly pipes in the audio output someone else is 
