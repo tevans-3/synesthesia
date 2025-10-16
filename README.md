@@ -2,7 +2,7 @@
 A browser tool to make music using just a color picker as an instrument. 
 
 # How this got made 
-Two modes: noise mode and soft mode
+Two modes: noise mode and soft mode </br>
 Noise mode was made following this paper: https://musmat.org/wp-content/uploads/2019/12/06-Carvalho.pdf
 Algorithm takes hex codes as input and then uses Markov Chains to output musical compositions.
 Users input the hex codes via a colorpicker. 
@@ -16,4 +16,4 @@ isn't one-to-one, so some hexcodes in a sector will map to the same chord more t
 
 #TO DO 
 Add a "Hear Someone Else's Noise" feature, which randomly pipes in the audio output someone else is 
-generating, and redirects your audio output to them, so you can hear each other's music 
+generating, so you can hear their music
