@@ -15,6 +15,11 @@ export default function MainLayout() {
     const medium = useMediaQuery(theme.breakpoints.up("md")); 
     const small = useMediaQuery(theme.breakpoints.up("sm")); 
 
+    function handleInput(e) { 
+        const color = e.target.value; 
+        console.log(color); 
+    }
+
     return (
         <Box sx={{ display: 'flex' }}>
             <AppBar position="fixed" sx={{ zIndex: 1300 }}>
@@ -23,7 +28,7 @@ export default function MainLayout() {
                      <Typography variant={large ? "b1" : medium ? "b1" : small ? "b2" : "b2"} 
                       color={'#000'} 
                       sx={{paddingLeft:"15px", marginLeft:"auto", whiteSpace:"nowrap"}}>
-                        Make music with a hex colorpicker.
+                        Make music with a colorpicker.
                      </Typography>
                     <List sx={{ paddingLeft: '5.8em'} }>
                         <ListItem button component={Link} to="https://github.com/tevans-3/synesthesia">
@@ -34,8 +39,9 @@ export default function MainLayout() {
                         </ListItem>
                     </List>
                 </Toolbar>     
-               <HexColorPicker sx={{ height: "100% !important", width:"100% !important"}}/>
+               <HexColorPicker onInput={handleInput} sx={{ height: "100% !important", width:"100% !important"}}/>
           </AppBar>
         </Box> 
     );
 }
+
