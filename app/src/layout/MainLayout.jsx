@@ -2,35 +2,43 @@ import React, { useState, useEffect, useRef } from 'react';
 import "../App.css";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { HexColorPicker } from 'react-colorful'; 
+import { HexColorPicker} from 'react-colorful'; 
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
-import { HuePointerButton } from "../components/HuePointerButton.jsx";
-import { useUpl}
+import HuePointerButton from "../components/HuePointerButton";
+import AlternateHexColorPicker from "../components/AlternateHexColorPicker";
+import { useUpload} from "../components/UploadContext";
 
 const drawerWidth = 240;
 
 export default function MainLayout() {
 
-    const theme = useTheme();  
+    const theme = createTheme({ 
+      palette: { 
+        primary: { 
+          main: '#ffffff'
+        }
+      }
+    })
     const large = useMediaQuery(theme.breakpoints.up("lg")); 
     const medium = useMediaQuery(theme.breakpoints.up("md")); 
     const small = useMediaQuery(theme.breakpoints.up("sm"));
 
-    const { 
+    const {
+      showHuePointer,
       setShowHuePointer
     } = useUpload(); 
 
-    function handleInput(e) { 
+    function handleInput(e) {
         const color = e.target.value; 
         console.log(color); 
     }
 
     return (
-        <Box sx={{ display: 'flex' }}>
+        <Box sx={{ display: 'flex'}}>
             <AppBar position="fixed" sx={{ zIndex: 1300 }}>
                 <Toolbar style={{ backgroundColor: "#fcfcfc"}}>
-                    <Typography variant="h6" align="left" color={'#000'} >SYNESTHESIA</Typography>
+                    <Typography variant="h6" align="left" color={'#000'} >SYNESTHESIA</Typography> 
                      <Typography variant={large ? "b1" : medium ? "b1" : small ? "b2" : "b2"} 
                       color={'#000'} 
                       sx={{paddingLeft:"15px", marginLeft:"auto", whiteSpace:"nowrap"}}>
@@ -44,13 +52,23 @@ export default function MainLayout() {
                             </ListItemText>
                         </ListItem>
                     </List>
-                </Toolbar>     
-               <HexColorPicker onInput={handleInput} sx={{ height: "100% !important", width:"100% !important"}}/>
-                </Toolbar>
-                <HuePointerButton sx={{draggable:true}}/>
-               {<HexColorPicker/> && !showHuePointer}
-               {<AlternateHexColorPicker/> && showHuePointer} 
-          </AppBar>
+                </Toolbar> 
+                
+                <Box sx={{
+                      position: 'fixed',
+                      bottom: 10,
+                      right: 10,
+                      display: 'flex',
+                    }}>          
+                  <HuePointerButton/>
+              </Box>
+
+              
+            </AppBar>
+            {showHuePointer && <HexColorPicker onInput={handleInput}/>}
+            {!showHuePointer && <HexColorPicker sx={{height:"500px"}} onInput={handleInput}/>} 
+
+          
         </Box> 
     );
 }
