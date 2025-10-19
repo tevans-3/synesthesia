@@ -13,10 +13,15 @@ export function UploadProvider({ children }) {
 
         window.addEventListener('resize', handleResize);
     });
+    
+    const [showHuePointer, setShowHuePointer] = useState(false); 
+
     const contextValue = React.useMemo(() => ({
-
+      showHuePointer, 
+      setShowHuePointer 
     }), [
-
+      showHuePointer, 
+      setShowHuePointer
         ]);
 
     return (

@@ -1,10 +1,12 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useRef } from 'react';
 import "../App.css";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { HexColorPicker } from 'react-colorful'; 
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
+import { HuePointerButton } from "../components/HuePointerButton.jsx";
+import { useUpl}
 
 const drawerWidth = 240;
 
@@ -13,7 +15,11 @@ export default function MainLayout() {
     const theme = useTheme();  
     const large = useMediaQuery(theme.breakpoints.up("lg")); 
     const medium = useMediaQuery(theme.breakpoints.up("md")); 
-    const small = useMediaQuery(theme.breakpoints.up("sm")); 
+    const small = useMediaQuery(theme.breakpoints.up("sm"));
+
+    const { 
+      setShowHuePointer
+    } = useUpload(); 
 
     function handleInput(e) { 
         const color = e.target.value; 
@@ -40,6 +46,10 @@ export default function MainLayout() {
                     </List>
                 </Toolbar>     
                <HexColorPicker onInput={handleInput} sx={{ height: "100% !important", width:"100% !important"}}/>
+                </Toolbar>
+                <HuePointerButton sx={{draggable:true}}/>
+               {<HexColorPicker/> && !showHuePointer}
+               {<AlternateHexColorPicker/> && showHuePointer} 
           </AppBar>
         </Box> 
     );
