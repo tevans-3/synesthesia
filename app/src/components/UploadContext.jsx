@@ -5,6 +5,9 @@ export const UploadContext = React.createContext();
 
 export function UploadProvider({ children }) {
 
+    const [width, setWidth] = useState(window.innerWidth); 
+    const [height, setHeight] = useState(window.innerHeight); 
+
     useEffect(() => {
         const handleResize = () => {
             setWidth(window.innerWidth); 
@@ -17,6 +20,10 @@ export function UploadProvider({ children }) {
     const [showHuePointer, setShowHuePointer] = useState(false); 
 
     const contextValue = React.useMemo(() => ({
+      width, 
+      setWidth,
+      height, 
+      setHeight,
       showHuePointer, 
       setShowHuePointer 
     }), [

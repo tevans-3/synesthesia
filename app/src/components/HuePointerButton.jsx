@@ -5,21 +5,30 @@ import { HexColorPicker } from 'react-colorful';
 import { Button, Typography } from '@mui/material';
 import { useUpload } from './UploadContext'; 
 
-export function HuePointerButton {
-  const { 
+export default function HuePointerButton() {
+  const {
+    showHuePointer,
     setShowHuePointer
   } = useUpload(); 
 
-  const handleClick = () => { 
-    setShowHuePointer(true); 
+  const handleClick = () => {
+    console.log(showHuePointer);
+    if (!showHuePointer){ 
+      setShowHuePointer(true);
+    }
+    else {
+      setShowHuePointer(false);
+    }
   };
 
   return (
     <Button sx={{
             fontFamily: 'Roboto',
-            backgroundColor: "#fce995", 
-            color: "#ddd", 
+            backgroundColor: "#fff", 
+            color: "#ddd"
         }}
+        variant="outlined"
+        color="#ffffff"
         onClick={handleClick}> 
            < Typography variant="h6" color={'#000'}> CHANGE COLOR </Typography>
         </Button>

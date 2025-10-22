@@ -2,11 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import "../App.css";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { HexColorPicker} from 'react-colorful'; 
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
 import HuePointerButton from "../components/HuePointerButton";
-import AlternateHexColorPicker from "../components/AlternateHexColorPicker";
 import { useUpload} from "../components/UploadContext";
 
 const drawerWidth = 240;
@@ -63,11 +61,8 @@ export default function MainLayout() {
                   <HuePointerButton/>
               </Box>
 
-              
+             <Hue/>
             </AppBar>
-            {showHuePointer && <HexColorPicker onInput={handleInput}/>}
-            {!showHuePointer && <HexColorPicker sx={{height:"500px"}} onInput={handleInput}/>} 
-
           
         </Box> 
     );

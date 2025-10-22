@@ -50,10 +50,12 @@
 }
 
 .react-colorful { 
-  display: flex; 
+  
+  padding-top: 2.05rem !important;
   width: 100vw !important; 
   height:100vh !important;
-  border-radius: 0%;
+  border-radius: 0% !important;
+
 }
 
 
