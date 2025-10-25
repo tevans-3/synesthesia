@@ -17,18 +17,18 @@ export function UploadProvider({ children }) {
         window.addEventListener('resize', handleResize);
     });
     
-    const [showHuePointer, setShowHuePointer] = useState(false); 
+    const [showHuePicker, setShowHuePicker] = useState(false); 
 
     const contextValue = React.useMemo(() => ({
       width, 
       setWidth,
       height, 
       setHeight,
-      showHuePointer, 
-      setShowHuePointer 
+      showHuePicker, 
+      setShowHuePicker 
     }), [
-      showHuePointer, 
-      setShowHuePointer
+      showHuePicker, 
+      setShowHuePicker
         ]);
 
     return (

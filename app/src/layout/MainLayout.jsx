@@ -4,9 +4,11 @@ import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
 import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
-import HuePointerButton from "../components/HuePointerButton";
+import HuePickerButton from "../components/HuePickerButton";
 import { useUpload} from "../components/UploadContext";
 import { HuePicker } from "react-color";
+import Saturation from '@uiw/react-color-saturation'; 
+import { hsvaToHex } from '@uiw/color-convert';
 
 const drawerWidth = 240;
 
@@ -24,11 +26,33 @@ export default function MainLayout() {
     const small = useMediaQuery(theme.breakpoints.up("sm"));
 
     const {
-      showHuePointer,
-      setShowHuePointer
+      showHuePicker,
+      setShowHuePicker
     } = useUpload(); 
 
-  
+    const [color, setColor] = useState(''); 
+    const [hex, setHex] = useState(''); 
+    const [hsva, setHsva] = useState({ h: 0, s: 0, v: 68, a: 1 });
+    function handleChange(newColor) { 
+      setColor(newColor); 
+      setHsva({ h:newColor.h, s:newColor.s, v:newColor.v, a: hsva.a });
+      console.log(newColor);
+      
+    };
+
+    useEffect(() => 
+    {
+      const hex = hsvaToHex(hsva); 
+      console.log(hex); 
+      setHex(hex); 
+    }, [hsva]); 
+    
+    function handleChangeHuePicker(newColor) { 
+      setColor(newColor); 
+      setHsva(newColor.hsv);
+      console.log(newColor);
+      
+    };
 
     return (
         <Box sx={{ display: 'flex'}}>
@@ -56,12 +80,18 @@ export default function MainLayout() {
                       right: 10,
                       display: 'flex',
                     }}>          
-                  <HuePointerButton/>
+                  <HuePickerButton/>
               </Box>
 
             </AppBar>
-         <HuePicker color={color}/>
- 
+         {showHuePicker && <HuePicker color={color.hsv} 
+                                       onChange={handleChangeHuePicker}
+                                       />}
+         <Saturation
+          hsva={hsva}
+         />
+
+
         </Box> 
     );
 }

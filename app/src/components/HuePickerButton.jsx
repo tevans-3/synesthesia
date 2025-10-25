@@ -5,19 +5,19 @@ import { HexColorPicker } from 'react-colorful';
 import { Button, Typography } from '@mui/material';
 import { useUpload } from './UploadContext'; 
 
-export default function HuePointerButton() {
+export default function HuePickerButton() {
   const {
-    showHuePointer,
-    setShowHuePointer
+    showHuePicker,
+    setShowHuePicker
   } = useUpload(); 
 
   const handleClick = () => {
-    console.log(showHuePointer);
-    if (!showHuePointer){ 
-      setShowHuePointer(true);
+    console.log(showHuePicker);
+    if (!showHuePicker){ 
+      setShowHuePicker(true);
     }
     else {
-      setShowHuePointer(false);
+      setShowHuePicker(false);
     }
   };
 
