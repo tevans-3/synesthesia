@@ -9,10 +9,10 @@ import { useUpload} from "../components/UploadContext";
 import { HuePicker } from "react-color";
 import Saturation from '@uiw/react-color-saturation'; 
 import { hsvaToHex } from '@uiw/color-convert';
-
+import { v4 as uuidv4 } from 'uuid';
 
 const drawerWidth = 240;
-
+const userId = uuidv4(); 
 export default function MainLayout() {
 
     const theme = createTheme({ 
@@ -40,7 +40,6 @@ export default function MainLayout() {
     const [saturationWidth, setSaturationWidth] = useState(null); 
     const [saturationHeight, setSaturationHeight] = useState(null);
 
-    const userId = crypto.randomUUID(); 
     
 
     async function DoPost(){
