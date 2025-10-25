@@ -89,6 +89,7 @@ export default function MainLayout() {
                                        />}
          <Saturation
           hsva={hsva}
+          onChange={handleChange}
          />
 
 
