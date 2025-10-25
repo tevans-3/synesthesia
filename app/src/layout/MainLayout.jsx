@@ -41,6 +41,27 @@ export default function MainLayout() {
 
    console.log(hex);
 
+    async function DoPost(){
+      try { 
+        const response = await fetch('/', {
+        method: 'POST', 
+        headers: {
+          'Content-Type': 'application/json', 
+          }, 
+          body: JSON.stringify({ hex}),
+        }); 
+     
+     if (!response.ok) {
+      throw new Error(`DOOM! status: ${response.status}`)   
+    
+    const data = await response.json(); 
+    console.log('Posted: ', data); 
+      }
+    }
+      catch (error) {
+      console.error('Error: ', error);
+    }
+   }
     function handleChange(newColor) {
        
       setColor(newColor); 
@@ -56,7 +77,7 @@ export default function MainLayout() {
       const hexVal = hsvaToHex(hsva); 
       console.log(hexVal); 
       setHex(hexVal); 
-    
+      DoPost(hexVal);
     }, [hsva]); 
 
 
