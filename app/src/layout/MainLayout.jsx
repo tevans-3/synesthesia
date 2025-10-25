@@ -2,9 +2,9 @@ import React, { useState, useEffect, useRef } from 'react';
 import "../App.css";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
-import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, Stack, FormControl, InputLabel, Select, MenuItem } from '@mui/material';
+import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box, Stack, FormControl, InputLabel, Select, MenuItem, Modal } from '@mui/material';
 import { Link, Outlet } from 'react-router-dom';
-import HuePickerButton from "../components/HuePickerButton";
+import HuePickerModal from "../components/HuePickerModal";
 import { useUpload} from "../components/UploadContext";
 import { HuePicker } from "react-color";
 import Saturation from '@uiw/react-color-saturation'; 
@@ -27,13 +27,22 @@ export default function MainLayout() {
 
     const {
       showHuePicker,
-      setShowHuePicker
+      setShowHuePicker, 
+      color, 
+      setColor, 
+      hex, 
+      setHex, 
+      hsva, 
+      setHsva 
     } = useUpload(); 
+   
+    const [saturationWidth, setSaturationWidth] = useState(null); 
+    const [saturationHeight, setSaturationHeight] = useState(null);
 
-    const [color, setColor] = useState(''); 
-    const [hex, setHex] = useState(''); 
-    const [hsva, setHsva] = useState({ h: 0, s: 0, v: 68, a: 1 });
-    function handleChange(newColor) { 
+   console.log(hex);
+
+    function handleChange(newColor) {
+       
       setColor(newColor); 
       setHsva({ h:newColor.h, s:newColor.s, v:newColor.v, a: hsva.a });
       console.log(newColor);
@@ -42,19 +51,17 @@ export default function MainLayout() {
 
     useEffect(() => 
     {
-      const hex = hsvaToHex(hsva); 
-      console.log(hex); 
-      setHex(hex); 
-    }, [hsva]); 
+  
+      console.log(hsva);
+      const hexVal = hsvaToHex(hsva); 
+      console.log(hexVal); 
+      setHex(hexVal); 
     
-    function handleChangeHuePicker(newColor) { 
-      setColor(newColor); 
-      setHsva(newColor.hsv);
-      console.log(newColor);
-      
-    };
+    }, [hsva]); 
+
 
     return (
+    
         <Box sx={{ display: 'flex'}}>
             <AppBar position="fixed" sx={{ zIndex: 1300 }}>
                 <Toolbar style={{ backgroundColor: "#fcfcfc"}}>
@@ -62,7 +69,7 @@ export default function MainLayout() {
                      <Typography variant={large ? "b1" : medium ? "b1" : small ? "b2" : "b2"} 
                       color={'#000'} 
                       sx={{paddingLeft:"15px", marginLeft:"auto", whiteSpace:"nowrap"}}>
-                        Make music with a colorpicker.
+                        Make music with colors. 
                      </Typography>
                     <List sx={{ paddingLeft: '5.8em'} }>
                         <ListItem button component={Link} to="https://github.com/tevans-3/synesthesia">
@@ -78,22 +85,28 @@ export default function MainLayout() {
                       position: 'fixed',
                       bottom: 10,
                       right: 10,
-                      display: 'flex',
+                      display: 'flex'
                     }}>          
-                  <HuePickerButton/>
+                  <HuePickerModal sx={{top:10, left:10, position:'fixed'}}/>
               </Box>
 
             </AppBar>
-         {showHuePicker && <HuePicker color={color.hsv} 
-                                       onChange={handleChangeHuePicker}
-                                       />}
+        
+
+        
          <Saturation
           hsva={hsva}
           onChange={handleChange}
-         />
+          style={{
+            width:"100vw", 
+            height: "100vh" 
+          }}
+      /> 
+             </Box> 
+       
+       
+  
 
-
-        </Box> 
     );
 }
 

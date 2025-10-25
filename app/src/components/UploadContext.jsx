@@ -6,8 +6,7 @@ export const UploadContext = React.createContext();
 export function UploadProvider({ children }) {
 
     const [width, setWidth] = useState(window.innerWidth); 
-    const [height, setHeight] = useState(window.innerHeight); 
-
+    const [height, setHeight] = useState(window.innerHeight);
     useEffect(() => {
         const handleResize = () => {
             setWidth(window.innerWidth); 
@@ -18,6 +17,9 @@ export function UploadProvider({ children }) {
     });
     
     const [showHuePicker, setShowHuePicker] = useState(false); 
+    const [color, setColor] = useState("#adadad");
+    const [hex, setHex] = useState('#adadad'); 
+    const [hsva, setHsva] = useState({ h: 1, s: 0, v: 68, a: 1 });
 
     const contextValue = React.useMemo(() => ({
       width, 
@@ -25,10 +27,22 @@ export function UploadProvider({ children }) {
       height, 
       setHeight,
       showHuePicker, 
-      setShowHuePicker 
+      setShowHuePicker, 
+      color, 
+      setColor, 
+      hex, 
+      setHex, 
+      hsva, 
+      setHsva
     }), [
       showHuePicker, 
-      setShowHuePicker
+      setShowHuePicker, 
+      color, 
+      setColor, 
+      hex, 
+      setHex, 
+      hsva, 
+      setHsva 
         ]);
 
     return (
