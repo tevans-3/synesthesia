@@ -10,6 +10,7 @@ import { HuePicker } from "react-color";
 import Saturation from '@uiw/react-color-saturation'; 
 import { hsvaToHex } from '@uiw/color-convert';
 
+
 const drawerWidth = 240;
 
 export default function MainLayout() {
@@ -39,16 +40,16 @@ export default function MainLayout() {
     const [saturationWidth, setSaturationWidth] = useState(null); 
     const [saturationHeight, setSaturationHeight] = useState(null);
 
-   console.log(hex);
+    const userId = crypto.randomUUID(); 
+    
 
     async function DoPost(){
+      console.log(userId);
       try { 
-        const response = await fetch('/', {
+        const response = await fetch('http://localhost:8080/postHexCode', {
         method: 'POST', 
-        headers: {
-          'Content-Type': 'application/json', 
-          }, 
-          body: JSON.stringify({ hex}),
+     
+          body: JSON.stringify({ hex, userId})
         }); 
      
      if (!response.ok) {
@@ -77,7 +78,8 @@ export default function MainLayout() {
       const hexVal = hsvaToHex(hsva); 
       console.log(hexVal); 
       setHex(hexVal); 
-      DoPost(hexVal);
+      DoPost(JSON.stringify({hexVal}));
+
     }, [hsva]); 
 
 
