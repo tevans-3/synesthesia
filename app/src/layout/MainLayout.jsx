@@ -6,6 +6,7 @@ import { AppBar, Toolbar, Typography, Drawer, List, ListItem, ListItemText, Box,
 import { Link, Outlet } from 'react-router-dom';
 import HuePointerButton from "../components/HuePointerButton";
 import { useUpload} from "../components/UploadContext";
+import { HuePicker } from "react-color";
 
 const drawerWidth = 240;
 
@@ -27,10 +28,7 @@ export default function MainLayout() {
       setShowHuePointer
     } = useUpload(); 
 
-    function handleInput(e) {
-        const color = e.target.value; 
-        console.log(color); 
-    }
+  
 
     return (
         <Box sx={{ display: 'flex'}}>
@@ -61,9 +59,9 @@ export default function MainLayout() {
                   <HuePointerButton/>
               </Box>
 
-             <Hue/>
             </AppBar>
-          
+         <HuePicker color={color}/>
+ 
         </Box> 
     );
 }
