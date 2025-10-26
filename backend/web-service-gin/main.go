@@ -5,14 +5,20 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
 	"fmt"
+	"sync"
 )
 
 type hexCode struct { 
-	HEX string `json:"hex"` 
-	USERID string `json:"userId"`
+	HEX string //`json:"hex"` 
+	USERID string //`json:"userId`
 }
 
-var hexCodes []hexCode
+var hexCodes map[string]hexCode 
+
+var counter = struct{
+	sync.RWMutex 
+	hexCodes map[string]string 
+}{hexCodes: make(map[string]string)}
 
 func postHexCode(c *gin.Context) {
 	var newHex hexCode 
@@ -20,16 +26,16 @@ func postHexCode(c *gin.Context) {
 	if err := c.BindJSON(&newHex); err != nil { 
 		return
 	}
- 
-	hexCodes = append(hexCodes, newHex)
-
+  counter.RLock()
+	counter.hexCodes[newHex.USERID] = newHex.HEX
+	counter.RUnlock()
 	c.IndentedJSON(http.StatusCreated, newHex)
  
 	fmt.Print(hexCodes)
 }
 
 func getHexCodes(c *gin.Context){
-	c.IndentedJSON(http.StatusOK, hexCodes)
+	c.IndentedJSON(http.StatusOK, counter.hexCodes)
 }
 
 func main() {
