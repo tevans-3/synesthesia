@@ -20,6 +20,18 @@ var counter = struct{
 	hexCodes map[string]string 
 }{hexCodes: make(map[string]string)}
 
+func tinyAnt(int id, jobs <- chan string, results <- chan string) {
+  for j := range jobs {
+		counter.RLock() 
+		var hex = counter.hexCodes[j]
+		delete(counter.hexCodes, j)
+    counter.RUnlock() 
+
+		//call audio generation
+		
+	}
+}
+
 func postHexCode(c *gin.Context) {
 	var newHex hexCode 
 
@@ -38,6 +50,14 @@ func getHexCodes(c *gin.Context){
 	c.IndentedJSON(http.StatusOK, counter.hexCodes)
 }
 
+func getNumUsers() {
+	counter.RLock()
+	numUsers := len(counter.hexCodes)
+  counter.RUnlock() 
+	return numUsers 
+}
+  
+
 func main() {
 	router := gin.Default() 
 	router.Use(cors.New(cors.Config{
@@ -52,5 +72,22 @@ func main() {
 
 	router.Run("localhost:8080")
 
-	
+	while (1) { 
+		numUsers = getNumUsers() 
+		if (numUsers == 0) return
+
+		jobs := make(chan int, numUsers)
+	  results := make(chan int, numUsers)
+
+		var id := 0 
+		counter.RLock()
+		for k := range counter.hexCodes { 
+			go tinyAnt(id++, jobs, results)
+		}
+		counter.RUnlock()
+		
+		for j = range counter.hexCodes {
+			jobs <- j 
+		}
+	}
 }
