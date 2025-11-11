@@ -2,10 +2,12 @@ package main
 
 import (
 	"net/http"
+	"io/ioutil"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
 	"fmt"
 	"sync"
+	"time"
 )
 
 type hexCode struct { 
@@ -20,13 +22,13 @@ var counter = struct{
 	hexCodes map[string]string 
 }{hexCodes: make(map[string]string)}
 
-func tinyAnt(int id, jobs <- chan string, results <- chan string) {
+func worker(jobs <- chan string, results <- chan string) {
   for j := range jobs {
 		counter.RLock() 
 		var hex = counter.hexCodes[j]
 		delete(counter.hexCodes, j)
     counter.RUnlock() 
-
+    fmt.Print(hex)
 		//call audio generation
 		
 	}
@@ -42,15 +44,13 @@ func postHexCode(c *gin.Context) {
 	counter.hexCodes[newHex.USERID] = newHex.HEX
 	counter.RUnlock()
 	c.IndentedJSON(http.StatusCreated, newHex)
- 
-	fmt.Print(hexCodes)
 }
 
 func getHexCodes(c *gin.Context){
 	c.IndentedJSON(http.StatusOK, counter.hexCodes)
 }
 
-func getNumUsers() {
+func getNumUsers() int {
 	counter.RLock()
 	numUsers := len(counter.hexCodes)
   counter.RUnlock() 
@@ -66,28 +66,46 @@ func main() {
 		AllowHeaders: []string{"Content-Type", "Authorization"},
 		ExposeHeaders: []string{"*"},
 	}))
-//	router.Use(cors.Default())
+
   router.GET("/getHexCodes", getHexCodes)
   router.POST("/postHexCode", postHexCode)
+ 
+	go func() {
+		router.Run("localhost:8080")
+  }()
 
-	router.Run("localhost:8080")
+	time.Sleep(10 * time.Second)
+  for { 
+		resp, err := http.Get("http://localhost:8080/getHexCodes")
+		if err != nil { 
+			fmt.Println("Failed getting hexCodes")
+			return
+		}
+		data, err := ioutil.ReadAll(resp.Body)
+		body := data
+		if err != nil { 
+			fmt.Println("Failed reading GET request response")
+			return
+		}
+  	fmt.Println(string(body))
 
-	while (1) { 
-		numUsers = getNumUsers() 
-		if (numUsers == 0) return
+		var numUsers = getNumUsers() 
+		if numUsers == 0 { return }
 
-		jobs := make(chan int, numUsers)
-	  results := make(chan int, numUsers)
+		jobs := make(chan string, numUsers)
+	  results := make(chan string, numUsers)
 
-		var id := 0 
 		counter.RLock()
-		for k := range counter.hexCodes { 
-			go tinyAnt(id++, jobs, results)
+
+		for _, k := range counter.hexCodes { 
+			go worker(jobs, results) 
+			fmt.Println(k)
+			fmt.Println("printing this muthafucking thang")
 		}
 		counter.RUnlock()
 		
-		for j = range counter.hexCodes {
-			jobs <- j 
+		for j := range counter.hexCodes {
+			jobs <-j
 		}
-	}
+  }
 }
