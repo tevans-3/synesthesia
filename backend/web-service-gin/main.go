@@ -7,7 +7,6 @@ import (
 	"github.com/gin-contrib/cors"
 	"fmt"
 	"sync"
-	"time"
 )
 
 type hexCode struct { 
@@ -27,8 +26,8 @@ func worker(jobs <- chan string, results <- chan string) {
 		counter.RLock() 
 		var hex = counter.hexCodes[j]
 		delete(counter.hexCodes, j)
-    counter.RUnlock() 
-    fmt.Print(hex)
+    counter.RUnlock()
+
 		//call audio generation
 		
 	}
@@ -74,23 +73,21 @@ func main() {
 		router.Run("localhost:8080")
   }()
 
-	time.Sleep(10 * time.Second)
-  for { 
-		resp, err := http.Get("http://localhost:8080/getHexCodes")
-		if err != nil { 
-			fmt.Println("Failed getting hexCodes")
-			return
-		}
-		data, err := ioutil.ReadAll(resp.Body)
-		body := data
-		if err != nil { 
-			fmt.Println("Failed reading GET request response")
-			return
-		}
-  	fmt.Println(string(body))
+  for {
 
 		var numUsers = getNumUsers() 
-		if numUsers == 0 { return }
+		for {
+			if numUsers != 0 {
+				break 
+			}
+			numUsers = getNumUsers()
+			
+		}
+
+		if err != nil { 
+			fmt.Println("Error converting to JSON:", err)
+			return 
+		}
 
 		jobs := make(chan string, numUsers)
 	  results := make(chan string, numUsers)
@@ -99,8 +96,6 @@ func main() {
 
 		for _, k := range counter.hexCodes { 
 			go worker(jobs, results) 
-			fmt.Println(k)
-			fmt.Println("printing this muthafucking thang")
 		}
 		counter.RUnlock()
 		

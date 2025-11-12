@@ -16,6 +16,7 @@
     "@uiw/color-convert": "^2.9.1",
     "@uiw/react-color-chrome": "^2.9.1",
     "@uiw/react-color-saturation": "^2.9.1",
+    "@uiw/react-color-wheel": "^2.9.2",
     "npm": "^11.5.2",
     "pouchdb": "^9.0.0",
     "react": "^19.1.1",
