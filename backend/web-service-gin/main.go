@@ -5,13 +5,53 @@ import (
 	"io/ioutil"
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
+	"github.com/gopxl/beep"
+	"github.com/gopxl/speaker"
+	"errors"
+	"math"
 	"fmt"
 	"sync"
+	"os"
 )
+
+var N = 24 //number of equal divisions in the 24 TET octave
+var A = 440 //frequency of reference note A 
 
 type hexCode struct { 
 	HEX string //`json:"hex"` 
 	USERID string //`json:"userId`
+}
+
+type note struct {
+	frequency float64 
+	steps int //number of steps (quarter tones) note is from ref note A= 440hz
+}
+
+notes := []note 
+
+func generate24TetScale() {
+	for i = 1; i <= 24; i++ {
+		append(notes, note{frequency:math.Pow(A, i/N), steps:i})
+	}
+}
+
+type chord struct {
+	notes []note
+	hex hexCode 
+}
+
+func generateChord(n int, hex hexCode) {   
+	c := chord{notes: []note, hex: hex} 
+
+	var i = 0 
+	for n {
+		if n & 1 {
+			i += 1 
+			append(c.notes, notes[i])
+		}
+		n = n >> 1 
+	}
+	return &c 
 }
 
 var hexCodes map[string]hexCode 
@@ -25,7 +65,7 @@ func worker(jobs <- chan string, results <- chan string) {
   for j := range jobs {
 		counter.RLock() 
 		var hex = counter.hexCodes[j]
-		delete(counter.hexCodes, j)
+	  delete(counter.hexCodes, j)
     counter.RUnlock()
 
 		//call audio generation
@@ -49,13 +89,12 @@ func getHexCodes(c *gin.Context){
 	c.IndentedJSON(http.StatusOK, counter.hexCodes)
 }
 
-func getNumUsers() int {
-	counter.RLock()
-	numUsers := len(counter.hexCodes)
-  counter.RUnlock() 
-	return numUsers 
+func getAudioByUserId(c *gin.Context) {
+	id := c.Param("id")
+
+	//hexCode hex = counter.hexCodes[id]
+	//c.IndentedJSON(http.StatusOK, )
 }
-  
 
 func main() {
 	router := gin.Default() 
@@ -73,24 +112,14 @@ func main() {
 		router.Run("localhost:8080")
   }()
 
+	generate24TetScale()
+	
   for {
 
-		var numUsers = getNumUsers() 
-		for {
-			if numUsers != 0 {
-				break 
-			}
-			numUsers = getNumUsers()
-			
-		}
+		pending = len(counter.hexCodes)
 
-		if err != nil { 
-			fmt.Println("Error converting to JSON:", err)
-			return 
-		}
-
-		jobs := make(chan string, numUsers)
-	  results := make(chan string, numUsers)
+		jobs := make(chan string, pending)
+	  results := make(chan string, pending)
 
 		counter.RLock()
 
