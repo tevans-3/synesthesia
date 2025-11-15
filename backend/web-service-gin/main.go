@@ -22,17 +22,26 @@ fmt := Format{SampleRate: 41400, NumChannels: 2, Precision: 4}
 
 type barrier struct {
 	threadBarrierNum int 
-	sync.RWMutex 
+	mutex sync.RWMutex 
 	totalThread int 
 }
 
 func barrier_init(bar *barrier, threadBarrierNum int) {
 	bar.threadBarrierNum = threadBarrierNum 
+	mutex = sync.RWMutex
 	bar.totalThread = 0 
 }
 
 func barrier_wait(bar *barrier) {
-	if (bar.Lock())
+	bar.Lock()
+	bar.totalThread += 1 
+	bar.Unlock()
+
+	for (bar.totalThread < threadBarrierNum){}
+
+	bar.Lock()
+	bar.totalThread += 1
+	bar.Unlock() 
 }
 
 type hexCode struct { 
@@ -72,8 +81,21 @@ func generateChord(n int, hex hexCode) {
 	return &c 
 }
 
-func outputChord2WavFile(c* chord) {
+func generateNote(n int) {
+	; //create note with frequency n, 
+}
 
+func outputChord2WavFile(c* chord) {
+	var wg sync.WaitGroup 
+
+	bar barrier* 
+	barrier_init(bar, len(c.notes))
+
+
+	for i := 0; i < len(c.notes); i++ {
+		wg.Add(1) 
+		go generateNote(c.notes[i], &wg)
+	}
 }
 
 var hexCodes map[string]hexCode 
