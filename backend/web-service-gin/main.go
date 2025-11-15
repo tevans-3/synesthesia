@@ -6,6 +6,7 @@ import (
 	"github.com/gin-gonic/gin"
 	"github.com/gin-contrib/cors"
 	"github.com/gopxl/beep"
+	"github.com/gopxl/beep/wav"
 	"github.com/gopxl/speaker"
 	"errors"
 	"math"
@@ -15,7 +16,24 @@ import (
 )
 
 var N = 24 //number of equal divisions in the 24 TET octave
-var A = 440 //frequency of reference note A 
+var A = 440 //frequency of reference note A
+
+fmt := Format{SampleRate: 41400, NumChannels: 2, Precision: 4}
+
+type barrier struct {
+	threadBarrierNum int 
+	sync.RWMutex 
+	totalThread int 
+}
+
+func barrier_init(bar *barrier, threadBarrierNum int) {
+	bar.threadBarrierNum = threadBarrierNum 
+	bar.totalThread = 0 
+}
+
+func barrier_wait(bar *barrier) {
+	if (bar.Lock())
+}
 
 type hexCode struct { 
 	HEX string //`json:"hex"` 
@@ -54,6 +72,10 @@ func generateChord(n int, hex hexCode) {
 	return &c 
 }
 
+func outputChord2WavFile(c* chord) {
+
+}
+
 var hexCodes map[string]hexCode 
 
 var counter = struct{
@@ -63,10 +85,10 @@ var counter = struct{
 
 func worker(jobs <- chan string, results <- chan string) {
   for j := range jobs {
-		counter.RLock() 
+		counter.Lock() 
 		var hex = counter.hexCodes[j]
 	  delete(counter.hexCodes, j)
-    counter.RUnlock()
+    counter.Unlock()
 
 		//call audio generation
 		
