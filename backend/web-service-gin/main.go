@@ -20,30 +20,6 @@ var A = 440 //frequency of reference note A
 
 fmt := Format{SampleRate: 41400, NumChannels: 2, Precision: 4}
 
-type barrier struct {
-	threadBarrierNum int 
-	mutex sync.RWMutex 
-	totalThread int 
-}
-
-func barrier_init(bar *barrier, threadBarrierNum int) {
-	bar.threadBarrierNum = threadBarrierNum 
-	mutex = sync.RWMutex
-	bar.totalThread = 0 
-}
-
-func barrier_wait(bar *barrier) {
-	bar.Lock()
-	bar.totalThread += 1 
-	bar.Unlock()
-
-	for (bar.totalThread < threadBarrierNum){}
-
-	bar.Lock()
-	bar.totalThread += 1
-	bar.Unlock() 
-}
-
 type hexCode struct { 
 	HEX string //`json:"hex"` 
 	USERID string //`json:"userId`
@@ -88,14 +64,12 @@ func generateNote(n int) {
 func outputChord2WavFile(c* chord) {
 	var wg sync.WaitGroup 
 
-	bar barrier* 
-	barrier_init(bar, len(c.notes))
-
-
 	for i := 0; i < len(c.notes); i++ {
 		wg.Add(1) 
 		go generateNote(c.notes[i], &wg)
 	}
+
+	wg.Add(-len(c.notes))
 }
 
 var hexCodes map[string]hexCode 
