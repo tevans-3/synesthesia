@@ -10,6 +10,7 @@ import { HuePicker } from "react-color";
 import Saturation from '@uiw/react-color-saturation'; 
 import { hsvaToHex } from '@uiw/color-convert';
 import { v4 as uuidv4 } from 'uuid';
+import * as Tone from "tone";
 
 const drawerWidth = 240;
 const userId = uuidv4(); 
@@ -40,10 +41,51 @@ export default function MainLayout() {
     const [saturationWidth, setSaturationWidth] = useState(null); 
     const [saturationHeight, setSaturationHeight] = useState(null);
 
-    
+    const N = 24; //number of equal divisions in the 24 TET scale
+    const A = 440; //frequency of reference note A 
+    var notes = []; 
 
-    async function DoPost(){
-      console.log(userId);
+    function generate24TetScale() {
+      for (let i = 1; i <= 24; i++) {
+        notes.push(A*Math.pow(2, i/N))
+      }
+    }
+
+    function getChord(hexCode) {
+      var notesInChord = []; 
+      // Source - https://stackoverflow.com/questions/45053624
+      // Posted by skoniks, modified by community. See post 'Timeline' for change history
+      // Retrieved 2025-11-17, License - CC BY-SA 4.0, Modified 2025-11-17 
+      hexCode = hexCode.replace('#', '');
+      var bin = hexCode.split('').map(i => 
+      parseInt(i, 16).toString(2).padStart(4, '0')).join('');
+      console.log(bin);  
+      var i = 0; 
+      while (bin) {
+        console.log(bin);
+        if (bin & 1) {
+          i ++;
+          console.log(notes[i]);
+          notesInChord.push(notes[i]); 
+        }
+        bin = bin >> 1; 
+      }
+      return notesInChord; 
+    } 
+
+    function GenerateAudio(hexCode){
+      console.log(hexCode);
+      generate24TetScale();
+      
+      var chord = getChord(hexCode); 
+      console.log(chord);
+      const synth = new Tone.PolySynth(Tone.Synth).toDestination(); 
+      const now = Tone.now(); 
+      synth.triggerRelease(chord, now); 
+      
+    } 
+
+    async function PostHexCode(){
       try { 
         const response = await fetch('http://localhost:8080/postHexCode', {
         method: 'POST', 
@@ -51,11 +93,11 @@ export default function MainLayout() {
           body: JSON.stringify({ hex, userId})
         }); 
      
-     if (!response.ok) {
+      if (!response.ok) {
       throw new Error(`DOOM! status: ${response.status}`)   
     
-    const data = await response.json(); 
-    console.log('Posted: ', data); 
+      const data = await response.json(); 
+      console.log('Posted: ', data); 
       }
     }
       catch (error) {
@@ -72,13 +114,12 @@ export default function MainLayout() {
 
     useEffect(() => 
     {
-  
-      console.log(hsva);
       const hexVal = hsvaToHex(hsva); 
-      console.log(hexVal); 
       setHex(hexVal); 
-      DoPost(JSON.stringify({hexVal}));
-
+      //PostHexCode(JSON.stringify({hexVal}));
+      setTimeout(() => {
+        GenerateAudio(hexVal)
+      }, 2500); 
     }, [hsva]); 
 
 
