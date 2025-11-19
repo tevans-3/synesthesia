@@ -5,10 +5,12 @@ A browser tool to make music using just a color picker as an instrument.
 I used the Markov Chain music generation algorithm found in this paper: [[https://musmat.org/wp-content/uploads/2019/12/06-Carvalho.pdf](https://math.uchicago.edu/~may/REU2023/REUPapers/Wokhlu.pdf)
 <br/>
 <br/>
-That paper presents a simple example of mapping the notes in Jingle Bells to a Markov transition matrix, where each (i,j) entry is the probability that note i moves to note j at the current step. 
-This program's inputs aren't musical notes, but hexcodes corresponding to a user's current colorpicker selection. So I needed to define a transformation function to map hexcodes to notes to feed as 
-seed input to my chain. I solved this problem by noticing that each hexcode contains 6 hex digits and each digit, 4 bits, for a total of 24 bits per code. That number, 24 bits, matches exactly the 
-number of notes in the 24-tone equal temperament scale. So I decided to use that scale instead of the standard Western chromatic one, because it produced a more natural mapping. 
+I initially planned to build this using the Markov chain algorithm in that paper to generate the actual music. I then learned about tone.js, and it seemed like it would be almost trivial to use that instead; I'd just have to swap from using Markov chains to a "live generation", where the program just streams back the user's most recent input. With this approach, all I needed to implement was the mapping of hexcodes to chords, and then tone.js would generate and play the audio. However, tone.js kept breaking under the case of high-frequency inputs, and all my attempts at debouncing, delaying and dropping strategies didn't resolve that issue. And even if tone.js worked perfectly, there was a more significant problem, which was that my method of mapping hexcodes to chords produced horrible identical-sounding noise for pretty much all hexcodes. 
+
+That paper presents a simple example of mapping the notes in Jingle Bells to a Markov transition matrix, where each (i,j) entry is the probability that note i moves to note j at the next step. 
+This program's inputs aren't musical notes, but hexcodes corresponding to a user's current colorpicker selection. So a transformation function is used to map hexcodes to notes to feed as 
+seed input to the Markov chain. Each hexcode contains 6 hex digits and each digit, 4 bits, for a total of 24 bits per code. That number, 24 bits, matches exactly the 
+number of notes in the 24-tone equal temperament scale. So I decided to use that scale instead of the standard Western chromatic one, because it produced a more natural mapping.  Unfortunately, this was a terrible decision, because as I mentioned above, while the mapping was natural, it produced identical-sounding noise for pretty much all the hexcodes. Fortunately, however, nobody knows what e.g. "#FFFFFF" sounds like, so I could just make up whatever mapping sounded best, and it wouldn't matter.  
 <br/>
 <br/>
 Here's an example showing how the algorithm maps hexcodes to chords: given hexcode #0x007c41, which is in binary 0000 0000 0111 1100 0100 0001, if note ni = 0, then it is excluded from the current transition matrix, 
