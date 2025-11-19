@@ -12,7 +12,7 @@ So I decided to go back to my original idea of (A) picking a random hexcode inpu
 That paper presents a simple example of mapping the notes in Jingle Bells to a Markov transition matrix, where each (i,j) entry is the probability that note i moves to note j at the next step. 
 This program's inputs aren't musical notes, but hexcodes corresponding to a user's current colorpicker selection. So a transformation function is used to map hexcodes to notes to feed as 
 seed input to the Markov chain. Each hexcode contains 6 hex digits and each digit, 4 bits, for a total of 24 bits per code. That number, 24 bits, matches exactly the 
-number of notes in the 24-tone equal temperament scale. So I decided to use that scale instead of the standard Western chromatic one, because it produced a more natural mapping.  Unfortunately, this was a terrible decision, because, while the mapping was natural, it produced identical-sounding noise for pretty much all the hexcodes. Fortunately, however, nobody knows what e.g. "#FFFFFF" sounds like, so I could just make up whatever mapping sounded best, and it wouldn't matter.  
+number of notes in the 24-tone equal temperament scale. So I decided to use that scale instead of the standard Western chromatic one, because it produced a more natural mapping. 
 <br/>
 <br/>
 Here's an example showing how the algorithm maps hexcodes to chords: given hexcode #0x007c41, which is in binary 0000 0000 0111 1100 0100 0001, if note ni = 0, then it is excluded from the current transition matrix, 
