@@ -71,7 +71,7 @@ export default function MainLayout() {
     } 
 
     function GenerateAudio(hexCode){
-      generate24TetScale();
+     // generate24TetScale();
       Tone.start(); 
       console.log("happening");
       var chord = getChord(hexCode); 
@@ -81,6 +81,8 @@ export default function MainLayout() {
       synth.triggerAttackRelease(chord, 1); 
       
     } 
+    
+    generate24TetScale(); 
 
     async function PostHexCode(){
       try { 
@@ -102,50 +104,16 @@ export default function MainLayout() {
     }
    }
     async function handleChange(newColor) {
-      await Tone.start(); 
+      //await Tone.start(); 
       setColor(newColor);
        
       setHsva({ h:newColor.h, s:newColor.s, v:newColor.v, a: hsva.a });
       setHex(hsvaToHex(hsva)); 
-     
+    
       GenerateAudio(hex); 
       
-      
     }
-    const debounce = (callback, arg, delay) => {
-      let timer; 
-      return function() {
-        clearTimeout(timer); 
-        timer = setTimeout(() => {
-          callback(arg); 
-        }, delay)
-      }
-    }
-    const debouncedHandleChange = debounce(handleChange, hex, 5000); 
   
-      /*setTimeout(() => {
-      GenerateAudio(hsvaToHex(hsva));}, 50);
-    };*/
-
-    async function handleClick() { 
-      await Tone.start(); 
-    }
-    
-
-    /*useEffect(() => 
-    {
-      const hexVal = hsvaToHex(hsva); 
-      
-      setHex(hexVal); 
-       
-      
-      //PostHexCode(JSON.stringify({hexVal}));
-      
-      GenerateAudio(hexVal)
-      
-    }, [hsva]); */
-
-
     return (
     
         <Box sx={{ display: 'flex'}}>
@@ -182,6 +150,7 @@ export default function MainLayout() {
         
          <Saturation
           hsva={hsva}
+          color={hex}
           onChange={handleChange}
           style={{
             width:"100vw", 
