@@ -53,22 +53,18 @@ export default function MainLayout() {
 
     function getChord(hexCode) {
       var notesInChord = []; 
-      // Source - https://stackoverflow.com/questions/45053624
-      // Posted by skoniks, modified by community. See post 'Timeline' for change history
-      // Retrieved 2025-11-17, License - CC BY-SA 4.0, Modified 2025-11-17 
       hexCode = hexCode.replace('#', '');
-      var bin = hexCode.split('').map(i => 
-      parseInt(i, 16).toString(2).padStart(4, '0')).join('');
-      console.log(bin);  
+      var num = parseInt(hexCode, 16);
+      console.log(num);  
       var i = 0; 
-      while (bin) {
-        console.log(bin);
-        if (bin & 1) {
+      while (num) {
+        console.log(num);
+        if (num & 1) {
           i ++;
           console.log(notes[i]);
           notesInChord.push(notes[i]); 
         }
-        bin = bin >> 1; 
+        num = num >> 1; 
       }
       return notesInChord; 
     } 
@@ -172,4 +168,5 @@ export default function MainLayout() {
 
     );
 }
+
 
