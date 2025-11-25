@@ -37,7 +37,8 @@ export default function MainLayout() {
       hsva, 
       setHsva 
     } = useUpload(); 
-   
+
+    const [hexCodes, setHexCodes] = useState([]); 
     const [saturationWidth, setSaturationWidth] = useState(null); 
     const [saturationHeight, setSaturationHeight] = useState(null);
 
@@ -103,16 +104,22 @@ export default function MainLayout() {
       console.error('Error: ', error);
     }
    }
-    async function handleChange(newColor) {
+   function getRandomInt(max) {
+        //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
+        return Math.floor(Math.random() * max);
+   }
+    
+   async function handleChange(newColor) {
       //await Tone.start(); 
       setColor(newColor);
        
       setHsva({ h:newColor.h, s:newColor.s, v:newColor.v, a: hsva.a });
       setHex(hsvaToHex(hsva)); 
-    
-      GenerateAudio(hex); 
-      
-    }
+      if (hexCodes.length >= 5) hexCodes = []; 
+      hexCodes.push(hsvaToHex(hsva)); 
+      idx = getRandomInt(hexCodes.length); 
+      GenerateAudio(hexCodes[idx]); 
+  }
   
     return (
     
@@ -164,5 +171,6 @@ export default function MainLayout() {
 
     );
 }
+
 
 
