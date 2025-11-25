@@ -109,7 +109,7 @@ export default function MainLayout() {
         return Math.floor(Math.random() * max);
    }
     
-   async function handleChange(newColor) {
+   const handleChange = (newColor) => {
       //await Tone.start(); 
       setColor(newColor);
        
@@ -119,7 +119,7 @@ export default function MainLayout() {
       hexCodes.push(hsvaToHex(hsva)); 
       idx = getRandomInt(hexCodes.length); 
       GenerateAudio(hexCodes[idx]); 
-  }
+  }; 
   
     return (
     
@@ -171,6 +171,7 @@ export default function MainLayout() {
 
     );
 }
+
 
 
 
