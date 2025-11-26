@@ -1,4 +1,5 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useCallback } from 'react';
+import _ from 'lodash';
 import "../App.css";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -38,7 +39,7 @@ export default function MainLayout() {
       setHsva 
     } = useUpload(); 
 
-    const [hexCodes, setHexCodes] = useState([]); 
+    var [hexCodes, setHexCodes] = useState([]); 
     const [saturationWidth, setSaturationWidth] = useState(null); 
     const [saturationHeight, setSaturationHeight] = useState(null);
 
@@ -48,9 +49,11 @@ export default function MainLayout() {
     const A = 440; //frequency of reference note A 
     var notes = []; 
 
+    var THROTTLE_TIME = 0;
+
     function generate24TetScale() {
       for (let i = 1; i <= 24; i++) {
-        notes.push(A*Math.pow(2, i/N))
+        notes.push(A*Math.pow(5, i/N))
       }
     }
 
@@ -79,7 +82,7 @@ export default function MainLayout() {
       const synth = new Tone.PolySynth(Tone.Synth, {oscillator:{type:"sine"}}).toDestination(); 
       const now = Tone.now();
       
-      synth.triggerAttackRelease(chord, 1); 
+      synth.triggerAttackRelease(chord, 4.5); 
       
     } 
     
@@ -104,22 +107,11 @@ export default function MainLayout() {
       console.error('Error: ', error);
     }
    }
-   function getRandomInt(max) {
-        //https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Math/random
-        return Math.floor(Math.random() * max);
-   }
+
     
-   const handleChange = (newColor) => {
-      //await Tone.start(); 
-      setColor(newColor);
-       
-      setHsva({ h:newColor.h, s:newColor.s, v:newColor.v, a: hsva.a });
-      setHex(hsvaToHex(hsva)); 
-      if (hexCodes.length >= 5) hexCodes = []; 
-      hexCodes.push(hsvaToHex(hsva)); 
-      idx = getRandomInt(hexCodes.length); 
-      GenerateAudio(hexCodes[idx]); 
-  }; 
+   const handleChange = _.throttle(GenerateAudio, THROTTLE_TIME); 
+
+
   
     return (
     
@@ -158,9 +150,10 @@ export default function MainLayout() {
          <Saturation
           hsva={hsva}
           color={hex}
-          onChange={handleChange}
+          onChange={handleChange(hsvaToHex(hex))}
+          onClick={Tone.start()}
           style={{
-            width:"100vw", 
+            width:"120vw", 
             height: "100vh" 
           }}
       /> 
