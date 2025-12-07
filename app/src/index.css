@@ -72,6 +72,10 @@ button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
 
+.w-color-saturation-pointer {
+  top: 0% !important; 
+}
+
 @media (prefers-color-scheme: light) {
   :root {
     color: #213547;
