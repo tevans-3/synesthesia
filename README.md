@@ -24,9 +24,4 @@ and if it equals 1, then it is included.
 That paper calculates transition probabilities (the i,j entry in the transition matrix) based on that set of Jingle Bells 
 notes. This program defines global transition probabilities for each note pair; these probabilities were calculated using random samples of 24-TET music, where (i,j) = (# samples where j follows i) / (# total samples).
 When mouse events stop triggering input updates (when the user's mouse "stays put" on the current color selection), the chain is simulated, and a stochastic composition generated. When a new input update 
-is triggered (the user drags the pointer, picking a new color), that new hexcode seeds a chain and a new simulation begins. In theory, this could go on for as long as a user wanted. This is great for people 
-who live in insane asylums or have had frontal lobotomies.
-
-#TO DO 
-Add a "Hear Someone Else's Noise" feature, which randomly pipes in the audio output someone else is 
-generating, so you can hear their music
+is triggered (the user drags the pointer, picking a new color), that new hexcode seeds a chain and a new simulation begins. 
