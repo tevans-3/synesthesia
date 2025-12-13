@@ -1,5 +1,5 @@
 # synesthesia
-An application to make music using a color picker as an instrument. 
+An application to make noise music using a color picker as an instrument. 
 
 # How this got made 
 I used the Markov Chain music generation algorithm found in this paper: [[https://musmat.org/wp-content/uploads/2019/12/06-Carvalho.pdf](https://math.uchicago.edu/~may/REU2023/REUPapers/Wokhlu.pdf)
