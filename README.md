@@ -1,4 +1,5 @@
-# synesthesia
+#  $${\color{crimson}S \space \color{lightblue}Y \color{orange} N \color{green} E \color{lime} S \color{purple} T \color{grey} H \color{pink} E \color{blue} S \color{magenta} I \color{neonyellow} A}$$
+
 An application to make noise music using a color picker as an instrument. 
 
 # How this got made 
