@@ -69,17 +69,13 @@ export default function MainLayout() {
 
       setColor(newColor); 
       setHsva({ h:newColor.h, s:newColor.s, v:newColor.v, a: hsva.a });
-      console.log(newColor); 
     };
 
     useEffect(() => 
     {
       setOscillator(); 
-      console.log(hsva);
       const hexVal = hsvaToHex(hsva); 
-      console.log(hexVal); 
       setHex(hexVal); 
-      DoPost(JSON.stringify({hexVal}));
     
     }, [hsva]); 
  
@@ -118,15 +114,21 @@ export default function MainLayout() {
     } 
 
     function GenerateAudio(hexCode, oscillatorType){
-     // generate24TetScale();
       Tone.start(); 
-      console.log(oscillatorType);  
       var chord = getChord(hexCode); 
-      const synth = new Tone.PolySynth(Tone.Synth, {oscillator:{type:oscillatorType}}).toDestination(); 
-      const now = Tone.now();
+      const synth = new Tone.PolySynth(Tone.Synth, 
+	      {
+		      oscillator:{type:oscillatorType},
+		      envelope: { attack: 1.5, decay: 2, sustain: 0.3, release: 1}
 
-      synth.triggerAttackRelease(chord, 5.5); 
-
+	      }
+      ).toDestination();
+      const limiter = new Tone.Limiter(-20).toDestination();
+      const now = Tone.now(); 
+      synth.connect(limiter);
+      var volume = new Tone.Volume(-7); 
+      synth.chain(volume, Tone.Master);
+      synth.triggerAttackRelease(chord, 5.5, now, 0.01);  
     } 
 
     function setOscillator(){
@@ -168,12 +170,11 @@ export default function MainLayout() {
           setOscillatorType("fatsquare");
       }
       else if (hval <= 320) {
-          setOscillatorType("fmsquare"); 
+          setOscillatorType("amsquare"); 
       } 
       else if (hval <= 358) { 
-          setOscillatorType("fmsine"); 
+          setOscillatorType("amsine");
       } 
-      console.log(oscillatorType);
     }
    
     generate24TetScale();
@@ -226,7 +227,6 @@ export default function MainLayout() {
          <Saturation
           hsva={hsva}
           onChange={handleChange}
-          //onClick={handleClick}
           style={{
             width:"100vw", 
             height: "100vh" 
