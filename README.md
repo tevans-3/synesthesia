@@ -2,6 +2,14 @@
 
 An application to make noise music using a color picker as an instrument. 
 
+# Try it out 
+[At this link](https://visualnoise.ca/)
+
+# Overview 
+This is a (silly, little) app which lets you make noise music using a color picker as an instrument. When you click on a specific point in the color picker, a bit of JavaScript maps the binary representation of the clicked-on color's hexcode to a "chord" in the 24 tone-equal-temperament scale. That chord is then played back using a throttled audio generation method which was implemented via the Tone.js library. 
+
+There's a [cool paper](https://math.uchicago.edu/~may/REU2023/REUPapers/Wokhlu.pdf) which shows how to use Markov chains to generate random music. Eventually, I'd like to use that paper's method to rewrite this application. In that version, clicked-on hexcodes would seed Markov chains and the generated audio would get streamed back to the user. 
+
 # How this got made 
 [Source of Markov chain music generation algorithm](https://math.uchicago.edu/~may/REU2023/REUPapers/Wokhlu.pdf)
 <br/>
@@ -24,5 +32,3 @@ and if it equals 1, then it is included.
 <br/>
 That paper calculates transition probabilities (the i,j entry in the transition matrix) based on that set of Jingle Bells 
 notes. This program defines global transition probabilities for each note pair; these probabilities were calculated using random samples of 24-TET music, where (i,j) = (# samples where j follows i) / (# total samples).
-When mouse events stop triggering input updates (when the user's mouse "stays put" on the current color selection), the chain is simulated, and a stochastic composition generated. When a new input update 
-is triggered (the user drags the pointer, picking a new color), that new hexcode seeds a chain and a new simulation begins. 
