@@ -1,4 +1,4 @@
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo} from 'react';
 import "../App.css";
 import { createTheme, ThemeProvider, useTheme } from "@mui/material/styles";
 import useMediaQuery from "@mui/material/useMediaQuery";
@@ -42,29 +42,11 @@ export default function MainLayout() {
     const [saturationWidth, setSaturationWidth] = useState(null); 
     const [saturationHeight, setSaturationHeight] = useState(null);
 
-    const [oscillatorType, setOscillatorType] = useState("sine"); 
+    const [oscillatorType, setOscillatorType] = useState("sine");
 
+    const limiter = useMemo(() => new Tone.Limiter(-20).toDestination(), []);
+    const volume = useMemo(() => new Tone.Volume(-7), []);
 
-    async function DoPost(){
-      console.log(userId);
-      try { 
-        const response = await fetch('http://localhost:8080/postHexCode', {
-        method: 'POST', 
-
-          body: JSON.stringify({ hex, userId})
-        }); 
-
-     if (!response.ok) {
-      throw new Error(`DOOM! status: ${response.status}`)   
-
-    const data = await response.json(); 
-    console.log('Posted: ', data); 
-      }
-    }
-      catch (error) {
-      console.error('Error: ', error);
-    }
-   }
     function handleClick(newColor) {
 
       setColor(newColor); 
@@ -85,7 +67,13 @@ export default function MainLayout() {
     var notes = []; 
 
     function generate24TetScale() {
+      // only generate the scale once, on initial page load
+      if (notes.length != 0) return; 
+
       for (let i = 1; i <= 24; i++) {
+        // this produces 'better' sounding noise than using 2.0 as base 
+        // so it's not a true scale mapping, but sometimes, in the pursuit of 
+        // aesthetic perfection /s/s/s/s, sacrifices must be made 
         var randFloat = getRandomArbitrary(0, 2); 
         notes.push(A*Math.pow(randFloat, i/N))
       }
@@ -105,30 +93,25 @@ export default function MainLayout() {
       while (num) {
 
         if (num & 1) {
-          i ++;
           notesInChord.push(notes[i]); 
         }
+        i ++; 
         num = num >> 1; 
       }
       return notesInChord; 
     } 
 
     function GenerateAudio(hexCode, oscillatorType){
-      Tone.start(); 
-      var chord = getChord(hexCode); 
-      const synth = new Tone.PolySynth(Tone.Synth, 
-	      {
-		      oscillator:{type:oscillatorType},
-		      envelope: { attack: 1.5, decay: 2, sustain: 0.3, release: 1}
-
-	      }
-      ).toDestination();
-      const limiter = new Tone.Limiter(-20).toDestination();
-      const now = Tone.now(); 
+      Tone.start();
+      var chord = getChord(hexCode);
+      const synth = new Tone.PolySynth(Tone.Synth, {
+          oscillator: { type: oscillatorType },
+          envelope: { attack: 1.5, decay: 2, sustain: 0.3, release: 1 }
+      });
       synth.connect(limiter);
-      var volume = new Tone.Volume(-7); 
-      synth.chain(volume, Tone.Master);
-      synth.triggerAttackRelease(chord, 5.5, now, 0.01);  
+      synth.chain(volume, Tone.getDestination());
+      synth.triggerAttackRelease(chord, 5.5, Tone.now(), 0.01);
+      setTimeout(() => synth.dispose(), 8000);
     } 
 
     function setOscillator(){
@@ -231,8 +214,8 @@ export default function MainLayout() {
             width:"100vw", 
             height: "100vh" 
           }}
-      /> 
-             </Box> 
+        /> 
+     </Box> 
        
        
   
